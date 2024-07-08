@@ -1,5 +1,7 @@
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const { User } = require("../models/user");
+const _ = require("lodash");
 
 const strategy = new GoogleStrategy(
   {
@@ -7,11 +9,23 @@ const strategy = new GoogleStrategy(
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: "http://localhost:3001/auth/google/redirect",
   },
-  (accessToken, refreshToken, profile, cb) => {
-    console.log("I Am Callback Function!");
-    console.log("Profile : ", profile._json);
+  async (accessToken, refreshToken, profile, cb) => {
+    let user = await User.findOne({
+      googleId: profile.id,
+      email: profile._json.email,
+    });
+    if (user) {
+      console.log("User Exists : ", user);
+    } else {
+      user = new User({ googleId: profile.id, email: profile._json.email });
+      await user.save();
+      console.log("New User : ", user);
+    }
 
-    cb();
+    // console.log("I Am Callback Function!");
+    // console.log("Profile : ", profile._json);
+
+    // cb();
   }
 );
 

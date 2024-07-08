@@ -18,6 +18,9 @@ const userSchema = Schema(
       minlength: 8,
       maxlength: 100,
     },
+    googleId: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
