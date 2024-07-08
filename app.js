@@ -1,9 +1,9 @@
 require("express-async-errors");
 const error = require("./middlewares/error");
-const app = require("express");
+const app = require("express")();
 
 require("./middlewares")(app);
 require("./middlewares/routes")(app);
-app.request(error);
+app.use(error);
 
 module.exports = app;
