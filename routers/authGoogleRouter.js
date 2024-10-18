@@ -6,11 +6,11 @@ router
   .route("/")
   .get(passport.authenticate("google", { scope: ["profile", "email"] }));
 
-router.route("/redirect").get(
-  passport.authenticate("google", (req, res) => {
-    console.log(req.body);
-    res.send("I Am Redirect URI!");
-  })
-);
+router
+  .route("/redirect")
+  .get(passport.authenticate("google", { session: false }), (req, res) => {
+    // console.log(req.body);
+    res.send(req.user);
+  });
 
 module.exports = router;

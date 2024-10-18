@@ -15,17 +15,26 @@ const strategy = new GoogleStrategy(
       email: profile._json.email,
     });
     if (user) {
-      console.log("User Exists : ", user);
+      // console.log("User Exists : ", user);
+      const token = user.generateJWT();
+      const response = {
+        user: _.pick(user, ["email", "_id"]),
+        token: token,
+      };
+
+      cb(null, response);
     } else {
       user = new User({ googleId: profile.id, email: profile._json.email });
       await user.save();
-      console.log("New User : ", user);
+      // console.log("New User : ", user);
+
+      const token = user.generateJWT();
+      const response = {
+        user: _.pick(user, ["email", "_id"]),
+        token: token,
+      };
+      cb(null, response);
     }
-
-    // console.log("I Am Callback Function!");
-    // console.log("Profile : ", profile._json);
-
-    // cb();
   }
 );
 
